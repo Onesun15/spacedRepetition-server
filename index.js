@@ -23,11 +23,6 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 const app = express();
 
-app.use(bodyParser.json());
-
-app.use('/api/users/', usersRouter);
-app.use('/api/auth/', authRouter);
-
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
@@ -39,6 +34,11 @@ app.use(
     origin: CLIENT_ORIGIN
   })
 );
+
+app.use(bodyParser.json());
+
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
 
 app.get('/api/users', (req, res) => {
   return User.find()
