@@ -5,20 +5,28 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
+const passport = require('passport');
 const { PORT, CLIENT_ORIGIN, DATABASE_URL } = require('./config');
+
 const { dbConnect } = require('./db-mongoose');
 const mongoose = require('mongoose');
 
 // const {dbConnect} = require('./db-knex');
 
 const { router: usersRouter } = require('./users');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
 
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 const app = express();
 
 app.use(bodyParser.json());
 
 app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
 
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
@@ -32,10 +40,34 @@ app.use(
   })
 );
 
-app.get('/test', (req, res) => {
+app.get('/api/users', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.apiRepr())))
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
+});
+
+app.get('/api/protected', jwtAuth, (req, res) => {
+  return res.json({
+    data: [
+      "Bath Blue",
+      "Barkham Blue",
+      "Buxton Blue",
+      "Cheshire Blue",
+      "Devon Blue",
+      "Dorset Blue Vinney",
+      "Dovedale",
+      "Exmoor Blue",
+      "Harbourne Blue",
+      "Lanark Blue",
+      "Lymeswold",
+      "Oxford Blue",
+      "Shropshire Blue",
+      "Stichelton",
+      "Stilton",
+      "Blue Wensleydale",
+      "Yorkshire Blue"
+  ]
+  });
 });
 
 function runServer(port = PORT) {
