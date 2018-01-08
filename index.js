@@ -40,11 +40,27 @@ app.use(bodyParser.json());
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 
+<<<<<<< HEAD
 app.get('/api/users', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.apiRepr())))
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
+=======
+
+
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+//   if (req.method === 'OPTIONS') {
+//     return res.send(204);
+//   }
+//   next();
+// });
+
+
+>>>>>>> master
 
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
