@@ -1,15 +1,22 @@
+require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
-require('dotenv').config();
-const {PORT, CLIENT_ORIGIN} = require('./config');
+const {PORT, CLIENT_ORIGIN, DATABASE_URL} = require('./config');
 const {dbConnect} = require('./db-mongoose');
+const mongoose = require('mongoose')
+
+
 // const {dbConnect} = require('./db-knex');
 
-const { router: usersRouter} = require('./users/router');
+const { router: usersRouter} = require('./users');
 const { User } = require('./users/models');
 
+
 const app = express();
+
+app.use(bodyParser.json());
 
 app.use('/api/users/', usersRouter);
 
@@ -21,13 +28,16 @@ app.use(
 
 app.use(
     cors({
-        origin: CLIENT_ORIGIN
+        origin: CLIENT_ORIGIN,
     })
 );
 
 app.get('/api/protected', (req, res) => { 
-    return res.json({ data: [ "Bath Blue", "Barkham Blue", "Buxton Blue", "Cheshire Blue", "Devon Blue", "Dorset Blue Vinney", "Dovedale", "Exmoor Blue", "Harbourne Blue", "Lanark Blue", "Lymeswold", "Oxford Blue", "Shropshire Blue", "Stichelton", "Stilton", "Blue Wensleydale", "Yorkshire Blue" ] }); });
+    return res.json('Testing'); });
 
+app.get('/test', (req, res) => { 
+    return User.find().then(users => res.json(users.map(user => user.apiRepr()))) 
+    .catch(err => res.status(500).json({message: 'Internal server error'})); });
 
 function runServer(port = PORT) {
     const server = app
@@ -40,10 +50,24 @@ function runServer(port = PORT) {
         });
 }
 
+function closeServer() {
+    return mongoose.disconnect().then(() => {
+       return new Promise((resolve, reject) => {
+         console.log('Closing server');
+         server.close(err => {
+             if (err) {
+                 return reject(err);
+             }
+             resolve();
+         });
+       });
+    });
+  }
+
 
 if (require.main === module) {
     dbConnect();
     runServer();
 }
 
-module.exports = {app};
+module.exports = {app, runServer, closeServer};

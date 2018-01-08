@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const mongoose = require('mongoose');
 const { User } = require('./models');
 
 const router = express.Router();
@@ -103,7 +103,7 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-router.get('/test', (req, res) => { 
+router.get('/router', (req, res) => { 
     return User.find() .then(users => res.json(users.map(user => user.apiRepr()))) 
     .catch(err => res.status(500).json({message: 'Internal server error'})); });
 
