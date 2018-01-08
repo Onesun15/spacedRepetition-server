@@ -53,12 +53,6 @@ app.use('/api/auth/', authRouter);
 // });
 
 
-console.log(CLIENT_ORIGIN);
-app.get('/api/users', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.apiRepr())))
-    .catch(err => res.status(500).json({ message: 'Internal server error' }));
-});
 
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
