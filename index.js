@@ -23,11 +23,6 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 const app = express();
 
-app.use(bodyParser.json());
-
-app.use('/api/users/', usersRouter);
-app.use('/api/auth/', authRouter);
-
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
@@ -40,6 +35,25 @@ app.use(
   })
 );
 
+app.use(bodyParser.json());
+
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
+
+
+
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+//   if (req.method === 'OPTIONS') {
+//     return res.send(204);
+//   }
+//   next();
+// });
+
+
+console.log(CLIENT_ORIGIN);
 app.get('/api/users', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.apiRepr())))
