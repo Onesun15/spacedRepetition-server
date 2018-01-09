@@ -43,29 +43,6 @@ app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 app.use('/api/questions', questionsRouter);
 
-<<<<<<< HEAD
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: [
-      "Bath Blue",
-      "Barkham Blue",
-      "Buxton Blue",
-      "Cheshire Blue",
-      "Devon Blue",
-      "Dorset Blue Vinney",
-      "Dovedale",
-      "Exmoor Blue",
-      "Harbourne Blue",
-      "Lanark Blue",
-      "Lymeswold",
-      "Oxford Blue",
-      "Shropshire Blue",
-      "Stichelton",
-      "Stilton",
-      "Blue Wensleydale",
-      "Yorkshire Blue"
-  ]
-=======
 // app.get('/api/questions', (req, res) => {
 //   return res.json({
 //     data: [
@@ -173,7 +150,6 @@ const loadDatabase = questions => {
       console.log('database empty, seedData');
       Question.insertMany(questions).catch(e => console.log(e));
     }
->>>>>>> master
   });
 };
 

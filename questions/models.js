@@ -5,11 +5,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const QuestionsSchema = mongoose.Schema({
-<<<<<<< HEAD
-  questions: {
-    spanish: String,
-    english: String,
-=======
   spanish: {
     type: String,
     required: true
@@ -20,7 +15,6 @@ const QuestionsSchema = mongoose.Schema({
   },
   id: {
     type: Number
->>>>>>> master
   }
 });
 
