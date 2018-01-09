@@ -54,13 +54,15 @@ router.post('/', jsonParser, (req, res) => {
     username: { min: 1 },
     password: { min: 2, max: 72 }
   };
-  const tooSmallField = Object.keys(sizedFields).find(field =>
-    'min' in sizedFields[field] &&
-    req.body[field].trim().length < sizedFields[field].min
+  const tooSmallField = Object.keys(sizedFields).find(
+    field =>
+      'min' in sizedFields[field] &&
+      req.body[field].trim().length < sizedFields[field].min
   );
-  const tooLargeField = Object.keys(sizedFields).find(field =>
-    'max' in sizedFields[field] &&
-    req.body[field].trim().length > sizedFields[field].max
+  const tooLargeField = Object.keys(sizedFields).find(
+    field =>
+      'max' in sizedFields[field] &&
+      req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
@@ -103,10 +105,10 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-router.get('/router', (req, res) => { 
-    return User.find().then(users => res.json(users.map(user => user.apiRepr()))) 
-    .catch(err => res.status(500).json({message: 'Internal server error'})); });
-
-
+router.get('/', (req, res) => {
+  return User.find()
+    .then(users => res.json(users.map(user => user.apiRepr())))
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
+});
 
 module.exports = { router };

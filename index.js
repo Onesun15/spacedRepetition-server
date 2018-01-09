@@ -15,6 +15,7 @@ const mongoose = require('mongoose');
 
 const { router: usersRouter } = require('./users');
 const { router: questionsRouter } = require('./router')
+// const { router: questionsRouter } = require('./questions');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
 const { Question } = require('./questions/models');
