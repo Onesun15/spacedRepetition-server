@@ -5,14 +5,28 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const QuestionsSchema = mongoose.Schema({
+<<<<<<< HEAD
   questions: {
     spanish: String,
     english: String,
+=======
+  spanish: {
+    type: String,
+    required: true
+  },
+  english: {
+    type: String,
+    required: true
+  },
+  id: {
+    type: Number
+>>>>>>> master
   }
 });
 
 QuestionsSchema.methods.apiRepr = function() {
-  return { questions: this.questions };
+  const { spanish, english, id } = this;
+  return { spanish, english, id };
 };
 
 const Question =
