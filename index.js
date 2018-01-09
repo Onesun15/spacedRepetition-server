@@ -19,7 +19,6 @@ const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
 const { Question } = require('./questions/models');
 
-
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
@@ -67,29 +66,91 @@ app.use('/api/questions', questionsRouter);
 //   });
 // });
 
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: [
-      "Bath Blue",
-      "Barkham Blue",
-      "Buxton Blue",
-      "Cheshire Blue",
-      "Devon Blue",
-      "Dorset Blue Vinney",
-      "Dovedale",
-      "Exmoor Blue",
-      "Harbourne Blue",
-      "Lanark Blue",
-      "Lymeswold",
-      "Oxford Blue",
-      "Shropshire Blue",
-      "Stichelton",
-      "Stilton",
-      "Blue Wensleydale",
-      "Yorkshire Blue"
-  ]
+// app.get('/api/protected', jwtAuth, (req, res) => {
+//   return res.json({
+//     data: [
+//       "Bath Blue",
+//       "Barkham Blue",
+//       "Buxton Blue",
+//       "Cheshire Blue",
+//       "Devon Blue",
+//       "Dorset Blue Vinney",
+//       "Dovedale",
+//       "Exmoor Blue",
+//       "Harbourne Blue",
+//       "Lanark Blue",
+//       "Lymeswold",
+//       "Oxford Blue",
+//       "Shropshire Blue",
+//       "Stichelton",
+//       "Stilton",
+//       "Blue Wensleydale",
+//       "Yorkshire Blue"
+//   ]
+//   });
+// });
+
+const preguntas = [
+  {
+    spanish: 'casa',
+    english: 'house',
+    id: 1
+  },
+  {
+    spanish: 'hambre',
+    english: 'hunger',
+    id: 2
+  },
+  {
+    spanish: 'perro',
+    english: 'dog',
+    id: 3
+  },
+  {
+    spanish: 'hola',
+    english: 'hello',
+    id: 4
+  },
+  {
+    spanish: 'mundo',
+    english: 'world',
+    id: 5
+  },
+  {
+    spanish: 'grande',
+    english: 'big',
+    id: 6
+  },
+  {
+    spanish: 'izquierda',
+    english: 'left',
+    id: 7
+  },
+  {
+    spanish: 'durmiendo',
+    english: 'sleeping',
+    id: 8
+  },
+  {
+    spanish: 'mesa',
+    english: 'table',
+    id: 9
+  },
+  {
+    spanish: 'pajaro',
+    english: 'bird',
+    id: 10
+  }
+];
+
+const loadDatabase = questions => {
+  Question.count({}).then(count => {
+    if (count < 1) {
+      console.log('database empty, seedData');
+      Question.insertMany(questions).catch(e => console.log(e));
+    }
   });
-});
+};
 
 function runServer(port = PORT) {
   const server = app
@@ -117,7 +178,10 @@ function closeServer() {
 }
 
 if (require.main === module) {
-  dbConnect();
+  dbConnect().then(() => {
+    console.log('connected to DB');
+    loadDatabase(preguntas);
+  });
   runServer();
 }
 
