@@ -14,8 +14,8 @@ const mongoose = require('mongoose');
 // const {dbConnect} = require('./db-knex');
 
 const { router: usersRouter } = require('./users');
-const { router: questionsRouter } = require('./router')
-// const { router: questionsRouter } = require('./questions');
+// const { router: questionsRouter } = require('./router')
+const { router: questionsRouter } = require('./questions');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
 const { Question } = require('./questions/models');
@@ -43,30 +43,6 @@ app.use(bodyParser.json());
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 app.use('/api/questions', questionsRouter);
-
-// app.get('/api/questions', (req, res) => {
-//   return res.json({
-//     data: [
-//       "Bath Blue",
-//       "Barkham Blue",
-//       "Buxton Blue",
-//       "Cheshire Blue",
-//       "Devon Blue",
-//       "Dorset Blue Vinney",
-//       "Dovedale",
-//       "Exmoor Blue",
-//       "Harbourne Blue",
-//       "Lanark Blue",
-//       "Lymeswold",
-//       "Oxford Blue",
-//       "Shropshire Blue",
-//       "Stichelton",
-//       "Stilton",
-//       "Blue Wensleydale",
-//       "Yorkshire Blue"
-//   ]
-//   });
-// });
 
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
