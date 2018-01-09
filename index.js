@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 // const {dbConnect} = require('./db-knex');
 
 const { router: usersRouter } = require('./users');
-const { router: questionsRouter } = require('./questions/router')
+const { router: questionsRouter } = require('./router')
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
 const { Question } = require('./questions/models');
