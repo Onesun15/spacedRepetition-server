@@ -41,14 +41,6 @@ app.use(bodyParser.json());
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-<<<<<<< HEAD
-
-app.get('/api/users', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.apiRepr())))
-    .catch(err => res.status(500).json({ message: 'Internal server error' }));
-});
-=======
 app.use('/api/questions', questionsRouter);
 
 // app.get('/api/questions', (req, res) => {
@@ -74,7 +66,6 @@ app.use('/api/questions', questionsRouter);
 //   ]
 //   });
 // });
->>>>>>> questions_schema
 
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
