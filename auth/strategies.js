@@ -31,6 +31,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
         });
       }
       return callback(null, user);
+    // .then.... send questions based on user progress
     })
     .catch(err => {
       if (err.reason === 'LoginError') {

@@ -5,11 +5,11 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const QuestionsSchema = mongoose.Schema({
-  spanish: {
+  question: {
     type: String,
     required: true
   },
-  english: {
+  answer: {
     type: String,
     required: true
   },
@@ -19,8 +19,8 @@ const QuestionsSchema = mongoose.Schema({
 });
 
 QuestionsSchema.methods.apiRepr = function() {
-  const { spanish, english, id } = this;
-  return { spanish, english, id };
+  const { question, answer, id } = this;
+  return { question, answer, id };
 };
 
 const Question =

@@ -15,10 +15,26 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
+<<<<<<< HEAD
   question: {
     a
   }
+=======
+  // points to first item question array
+  head: {
+    type: Number,
+    default: 0
+  },
+  questions: [{
+    question: String,
+    answer: String,
+    mValue: Number,
+    next: Number,
+  },
+]
+>>>>>>> day3
 });
+
 
 UserSchema.methods.apiRepr = function () {
   return { username: this.username };
