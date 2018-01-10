@@ -14,8 +14,21 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  // points to first item question array
+  head: {
+    type: Number,
+    default: 0
+  },
+  questions: [{
+    question: String,
+    answer: String,
+    mValue: Number,
+    next: Number,
+  },
+]
 });
+
 
 UserSchema.methods.apiRepr = function () {
   return { username: this.username };

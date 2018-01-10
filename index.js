@@ -92,53 +92,53 @@ app.use('/api/questions', questionsRouter);
 
 const preguntas = [
   {
-    spanish: 'casa',
-    english: 'house',
+    question: 'casa',
+    answer: 'house',
     id: 1
   },
   {
-    spanish: 'hambre',
-    english: 'hunger',
+    question: 'hambre',
+    answer: 'hunger',
     id: 2
   },
   {
-    spanish: 'perro',
-    english: 'dog',
+    question: 'perro',
+    answer: 'dog',
     id: 3
   },
   {
-    spanish: 'hola',
-    english: 'hello',
+    question: 'hola',
+    answer: 'hello',
     id: 4
   },
   {
-    spanish: 'mundo',
-    english: 'world',
+    question: 'mundo',
+    answer: 'world',
     id: 5
   },
   {
-    spanish: 'grande',
-    english: 'big',
+    question: 'grande',
+    answer: 'big',
     id: 6
   },
   {
-    spanish: 'izquierda',
-    english: 'left',
+    question: 'izquierda',
+    answer: 'left',
     id: 7
   },
   {
-    spanish: 'durmiendo',
-    english: 'sleeping',
+    question: 'durmiendo',
+    answer: 'sleeping',
     id: 8
   },
   {
-    spanish: 'mesa',
-    english: 'table',
+    question: 'mesa',
+    answer: 'table',
     id: 9
   },
   {
-    spanish: 'pajaro',
-    english: 'bird',
+    question: 'pajaro',
+    answer: 'bird',
     id: 10
   }
 ];

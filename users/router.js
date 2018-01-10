@@ -94,6 +94,11 @@ router.post('/', jsonParser, (req, res) => {
     .then(hash => {
       return User.create({ username, password: hash });
     })
+    // take question from question collection and input into User.question
+    //  .then(user => Question.find(), .then(({user, questions}), user.questions 
+    // save/update question object in User, i.e. mValue = 1 next, index+1
+    // return User.save()
+
     .then(user => {
       return res.status(201).json(user.apiRepr());
     })
