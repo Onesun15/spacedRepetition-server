@@ -15,11 +15,6 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true
   },
-<<<<<<< HEAD
-  question: {
-    a
-  }
-=======
   // points to first item question array
   head: {
     type: Number,
@@ -32,7 +27,6 @@ const UserSchema = mongoose.Schema({
     next: Number,
   },
 ]
->>>>>>> day3
 });
 
 
