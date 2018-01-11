@@ -28,14 +28,39 @@ router.get('/next', jwtAuth, (req, res) => {
     });
 });
 
-// router.get('/', (req, res) => {
-//   // change to use User.findOne() collection
-//   return Question.find().then(question => res.json(question.map(question => question.apiRepr()))) 
-//   // user.question[user.head]
-//     .catch(err => res.status(500).json({message: 'Internal server error'})); });
+let testResponse = false;
 
+router.post('/answer', jwtAuth, (req, res) => {
+  let response = 
 
-
+  User.findOne({username: req.user.username})
+  .then(user => {
+    // console.log(user, 'user')
+    let questions = user.questions
+    // console.log(questions, 'questions')
+    let currentQuestion = user.questions[user.head]
+    let mValue = user.questions[user.head].mValue;
+    // console.log(mValue, 'mvalue')
+    if (mValue.length>questions.length){
+      currentQuestion = currentQuestion + 1
+    }
+    if(testResponse === true){
+      currentQuestion = user.questions[user.head + 1]
+      mValue *= 2;
+      // console.log(mValue, 'mValue')
+    }
+    if(testResponse === false){
+      currentQuestion = user.questions[user.head + 1]
+      mValue = 1;
+      // console.log(mValue, 'false mValue')
+    }
+    
+      user.head = currentQuestion.next
+    // console.log(currentQuestion.next, user.head,'head', 'currentQuestion++++++++')
+    // console.log(user, 'user++++++++++++++')
+    return user.save()
+  })
+})
 
     //router.post('/userAnswer'){
         // get back whether answer is correct or not
