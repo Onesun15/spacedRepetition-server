@@ -25,14 +25,14 @@ router.get('/', jwtAuth, (req, res) => {
     });
 });
 
-let testResponse = true;
-
+let isCorrect = true;
+//req.body.boolean
 router.post('/answer', jwtAuth, (req, res) => {
   let response = User.findOne({ username: req.user.username }).then(user => {
     const questions = user.questions;
     const answerIndex = user.head;
     const currentQuestion = user.questions[answerIndex];
-    if (testResponse === true) {
+    if (isCorrect === true) {
       currentQuestion.mValue *= 2;
     } else {
       currentQuestion.mValue = 1;
