@@ -34,6 +34,11 @@ UserSchema.methods.apiRepr = function () {
   return { username: this.username };
 };
 
+// UserSchema.methods.apiRepr = function() {
+//   const { questions.question, answer, id } = this;
+//   return { question, answer, id };
+// };
+
 UserSchema.methods.validatePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };

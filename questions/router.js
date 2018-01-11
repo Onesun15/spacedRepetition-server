@@ -13,10 +13,7 @@ const jsonParser = bodyParser.json();
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// add JWT tokent to params
-// /nextquestion endpoint
-
-router.get('/next', jwtAuth, (req, res) => {
+router.get('/', jwtAuth, (req, res) => {
 // console.log(req.user, '+++++++++++++++++++++++++++++');
   User.findOne({username: req.user.username})
     .then(user => {
@@ -28,48 +25,37 @@ router.get('/next', jwtAuth, (req, res) => {
     });
 });
 
-let testResponse = false;
+let testResponse = true;
 
 router.post('/answer', jwtAuth, (req, res) => {
   let response = 
 
   User.findOne({username: req.user.username})
   .then(user => {
-    // console.log(user, 'user')
-    let questions = user.questions
-    // console.log(questions, 'questions')
-    let currentQuestion = user.questions[user.head]
-    let mValue = user.questions[user.head].mValue;
-    // console.log(mValue, 'mvalue')
-    if (mValue.length>questions.length){
-      currentQuestion = currentQuestion + 1
-    }
+    const questions = user.questions
+    const answerIndex = user.head;
+    const currentQuestion = user.questions[answerIndex]
     if(testResponse === true){
-      currentQuestion = user.questions[user.head + 1]
-      mValue *= 2;
-      // console.log(mValue, 'mValue')
+      currentQuestion.mValue *= 2;
     }
-    if(testResponse === false){
-      currentQuestion = user.questions[user.head + 1]
-      mValue = 1;
-      // console.log(mValue, 'false mValue')
+    else {
+      currentQuestion.mValue = 1;
+
     }
-    
-      user.head = currentQuestion.next
-    // console.log(currentQuestion.next, user.head,'head', 'currentQuestion++++++++')
-    // console.log(user, 'user++++++++++++++')
+    user.head = currentQuestion.next
+     let answeredNode;
+      for(let i = 0; i < currentQuestion.mValue; i++){    
+        let idx = currentQuestion.next
+        if (idx == null){
+          idx = user.questions.length - 1
+        } 
+        answeredNode = user.questions[idx]
+      }
+      currentQuestion.next = answeredNode.next
+      answeredNode.next = answerIndex
     return user.save()
   })
 })
-
-    //router.post('/userAnswer'){
-        // get back whether answer is correct or not
-        // verified in front end whether answered correctly
-        // here we do a check, if (req.body.isCorrect) mValue = *2 else mValue = 1 
-        // (if mValue.length>arr.lenght), user.head = question.next, 
-        // need to add node === to current position
-        // return User.save()
-    // } 
 
 
 
