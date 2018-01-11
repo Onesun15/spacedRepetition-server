@@ -14,9 +14,10 @@ const mongoose = require('mongoose');
 // const {dbConnect} = require('./db-knex');
 
 const { router: usersRouter } = require('./users');
+const { router: questionsRouter } = require('./questions');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { User } = require('./users/models');
-
+const { Question } = require('./questions/models');
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
@@ -39,50 +40,117 @@ app.use(bodyParser.json());
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
+app.use('/api/questions', questionsRouter);
 
-
-
-// app.use(function (req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-//   if (req.method === 'OPTIONS') {
-//     return res.send(204);
-//   }
-//   next();
+// app.get('/api/questions', (req, res) => {
+//   return res.json({
+//     data: [
+//       "Bath Blue",
+//       "Barkham Blue",
+//       "Buxton Blue",
+//       "Cheshire Blue",
+//       "Devon Blue",
+//       "Dorset Blue Vinney",
+//       "Dovedale",
+//       "Exmoor Blue",
+//       "Harbourne Blue",
+//       "Lanark Blue",
+//       "Lymeswold",
+//       "Oxford Blue",
+//       "Shropshire Blue",
+//       "Stichelton",
+//       "Stilton",
+//       "Blue Wensleydale",
+//       "Yorkshire Blue"
+//   ]
+//   });
 // });
 
+// app.get('/api/protected', jwtAuth, (req, res) => {
+//   return res.json({
+//     data: [
+//       "Bath Blue",
+//       "Barkham Blue",
+//       "Buxton Blue",
+//       "Cheshire Blue",
+//       "Devon Blue",
+//       "Dorset Blue Vinney",
+//       "Dovedale",
+//       "Exmoor Blue",
+//       "Harbourne Blue",
+//       "Lanark Blue",
+//       "Lymeswold",
+//       "Oxford Blue",
+//       "Shropshire Blue",
+//       "Stichelton",
+//       "Stilton",
+//       "Blue Wensleydale",
+//       "Yorkshire Blue"
+//   ]
+//   });
+// });
 
-console.log(CLIENT_ORIGIN);
-app.get('/api/users', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.apiRepr())))
-    .catch(err => res.status(500).json({ message: 'Internal server error' }));
-});
+const preguntas = [
+  {
+    question: 'casa',
+    answer: 'house',
+    id: 1
+  },
+  {
+    question: 'hambre',
+    answer: 'hunger',
+    id: 2
+  },
+  {
+    question: 'perro',
+    answer: 'dog',
+    id: 3
+  },
+  {
+    question: 'hola',
+    answer: 'hello',
+    id: 4
+  },
+  {
+    question: 'mundo',
+    answer: 'world',
+    id: 5
+  },
+  {
+    question: 'grande',
+    answer: 'big',
+    id: 6
+  },
+  {
+    question: 'izquierda',
+    answer: 'left',
+    id: 7
+  },
+  {
+    question: 'durmiendo',
+    answer: 'sleeping',
+    id: 8
+  },
+  {
+    question: 'mesa',
+    answer: 'table',
+    id: 9
+  },
+  {
+    question: 'pajaro',
+    answer: 'bird',
+    id: 10
+  }
+];
 
-app.get('/api/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: [
-      "Bath Blue",
-      "Barkham Blue",
-      "Buxton Blue",
-      "Cheshire Blue",
-      "Devon Blue",
-      "Dorset Blue Vinney",
-      "Dovedale",
-      "Exmoor Blue",
-      "Harbourne Blue",
-      "Lanark Blue",
-      "Lymeswold",
-      "Oxford Blue",
-      "Shropshire Blue",
-      "Stichelton",
-      "Stilton",
-      "Blue Wensleydale",
-      "Yorkshire Blue"
-  ]
+const loadDatabase = questions => {
+  Question.count({}).then(count => {
+    if (count < 1) {
+      console.log('database empty, seedData');
+      Question.insertMany(questions).catch(e => console.log(e));
+    }
   });
-});
+};
 
 function runServer(port = PORT) {
   const server = app
@@ -110,7 +178,10 @@ function closeServer() {
 }
 
 if (require.main === module) {
-  dbConnect();
+  dbConnect().then(() => {
+    console.log('connected to DB');
+    loadDatabase(preguntas);
+  });
   runServer();
 }
 

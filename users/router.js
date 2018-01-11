@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { User } = require('./models');
+const { Question } = require('../questions/models')
 
 const router = express.Router();
 
@@ -54,13 +55,15 @@ router.post('/', jsonParser, (req, res) => {
     username: { min: 1 },
     password: { min: 2, max: 72 }
   };
-  const tooSmallField = Object.keys(sizedFields).find(field =>
-    'min' in sizedFields[field] &&
-    req.body[field].trim().length < sizedFields[field].min
+  const tooSmallField = Object.keys(sizedFields).find(
+    field =>
+      'min' in sizedFields[field] &&
+      req.body[field].trim().length < sizedFields[field].min
   );
-  const tooLargeField = Object.keys(sizedFields).find(field =>
-    'max' in sizedFields[field] &&
-    req.body[field].trim().length > sizedFields[field].max
+  const tooLargeField = Object.keys(sizedFields).find(
+    field =>
+      'max' in sizedFields[field] &&
+      req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
@@ -92,8 +95,23 @@ router.post('/', jsonParser, (req, res) => {
     .then(hash => {
       return User.create({ username, password: hash });
     })
+    .then(user => Question.find().then(questions => ({user, questions})))
+        .then(({user, questions}) => {
+            console.log(user, questions);
+      // storing q's in empty user.questions []
+      user.questions = questions.map((question, index) => {
+        return {
+          _id: question._id,
+          question: question.question,
+          answer: question.answer,
+          mValue: 1,
+          next: index === questions.length - 1 ? null: index + 1
+        }
+      })
+      return user.save()
+    })
     .then(user => {
-      return res.status(201).json(user.apiRepr());
+      return res.status(201).json(user.apiRepr())
     })
     .catch(err => {
       if (err.reason === 'ValidationError') {
@@ -101,12 +119,12 @@ router.post('/', jsonParser, (req, res) => {
       }
       res.status(500).json({ code: 500, message: 'Internal server error' });
     });
+  });
+
+router.get('/', (req, res) => {
+  return User.find()
+    .then(users => res.json(users.map(user => user.apiRepr())))
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
-
-router.get('/router', (req, res) => { 
-    return User.find() .then(users => res.json(users.map(user => user.apiRepr()))) 
-    .catch(err => res.status(500).json({message: 'Internal server error'})); });
-
-
 
 module.exports = { router };
