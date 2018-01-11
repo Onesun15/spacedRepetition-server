@@ -28,14 +28,20 @@ router.get('/next', jwtAuth, (req, res) => {
     });
 });
 
-// router.get('/', (req, res) => {
-//   // change to use User.findOne() collection
-//   return Question.find().then(question => res.json(question.map(question => question.apiRepr()))) 
-//   // user.question[user.head]
-//     .catch(err => res.status(500).json({message: 'Internal server error'})); });
 
 
 
+router.post('/answer', jwtAuth, (req, res) => {
+  let currentQuestion = user.head
+  if(currentQuestion === null){
+    return console.log('you\'ve answered all the Q\'s')
+  }
+  while(!currentQuestion === null){
+    console.log(currentQuestion.value)
+    currentQuestion = currentQuestion.next
+  }
+  console.log(currentQuestion, 'line 47')
+})
 
     //router.post('/userAnswer'){
         // get back whether answer is correct or not
