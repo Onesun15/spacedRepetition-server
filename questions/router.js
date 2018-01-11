@@ -16,11 +16,11 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 // add JWT tokent to params
 // /nextquestion endpoint
 
-router.get('/', (req, res) => {
+router.get('/next', jwtAuth, (req, res) => {
 // console.log(req.user, '+++++++++++++++++++++++++++++');
-  User.findOne({username: req.users.answer})
+  User.findOne({username: req.user.username})
     .then(user => {
-      res.json(user.apiRepr());
+      res.json(user.questions[user.head]);
     })
     .catch(err => {
       console.log(err);
