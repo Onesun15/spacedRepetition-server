@@ -13,10 +13,7 @@ const jsonParser = bodyParser.json();
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// add JWT tokent to params
-// /nextquestion endpoint
-
-router.get('/next', jwtAuth, (req, res) => {
+router.get('/', jwtAuth, (req, res) => {
 // console.log(req.user, '+++++++++++++++++++++++++++++');
   User.findOne({username: req.user.username})
     .then(user => {
@@ -28,29 +25,37 @@ router.get('/next', jwtAuth, (req, res) => {
     });
 });
 
-
-
+let testResponse = true;
 
 router.post('/answer', jwtAuth, (req, res) => {
-  let currentQuestion = user.head
-  if(currentQuestion === null){
-    return console.log('you\'ve answered all the Q\'s')
-  }
-  while(!currentQuestion === null){
-    console.log(currentQuestion.value)
-    currentQuestion = currentQuestion.next
-  }
-  console.log(currentQuestion, 'line 47')
-})
+  let response = 
 
-    //router.post('/userAnswer'){
-        // get back whether answer is correct or not
-        // verified in front end whether answered correctly
-        // here we do a check, if (req.body.isCorrect) mValue = *2 else mValue = 1 
-        // (if mValue.length>arr.lenght), user.head = question.next, 
-        // need to add node === to current position
-        // return User.save()
-    // } 
+  User.findOne({username: req.user.username})
+  .then(user => {
+    const questions = user.questions
+    const answerIndex = user.head;
+    const currentQuestion = user.questions[answerIndex]
+    if(testResponse === true){
+      currentQuestion.mValue *= 2;
+    }
+    else {
+      currentQuestion.mValue = 1;
+
+    }
+    user.head = currentQuestion.next
+     let answeredNode;
+      for(let i = 0; i < currentQuestion.mValue; i++){    
+        let idx = currentQuestion.next
+        if (idx == null){
+          idx = user.questions.length - 1
+        } 
+        answeredNode = user.questions[idx]
+      }
+      currentQuestion.next = answeredNode.next
+      answeredNode.next = answerIndex
+    return user.save()
+  })
+})
 
 
 
