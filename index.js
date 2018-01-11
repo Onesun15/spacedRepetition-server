@@ -41,7 +41,7 @@ app.use(bodyParser.json());
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 app.use('/api/questions', questionsRouter);
-app.use('/api/questions/next', questionsRouter);
+
 
 // app.get('/api/questions', (req, res) => {
 //   return res.json({
