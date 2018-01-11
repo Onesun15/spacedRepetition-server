@@ -14,10 +14,10 @@ const jsonParser = bodyParser.json();
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.get('/', jwtAuth, (req, res) => {
-// console.log(req.user, '+++++++++++++++++++++++++++++');
-  User.findOne({username: req.user.username})
+  // console.log(req.user, '+++++++++++++++++++++++++++++');
+  User.findOne({ username: req.user.username })
     .then(user => {
-      res.json(user.questions[user.head]);
+      res.json(user.apiRepr());
     })
     .catch(err => {
       console.log(err);
@@ -28,36 +28,28 @@ router.get('/', jwtAuth, (req, res) => {
 let testResponse = true;
 
 router.post('/answer', jwtAuth, (req, res) => {
-  let response = 
-
-  User.findOne({username: req.user.username})
-  .then(user => {
-    const questions = user.questions
+  let response = User.findOne({ username: req.user.username }).then(user => {
+    const questions = user.questions;
     const answerIndex = user.head;
-    const currentQuestion = user.questions[answerIndex]
-    if(testResponse === true){
+    const currentQuestion = user.questions[answerIndex];
+    if (testResponse === true) {
       currentQuestion.mValue *= 2;
-    }
-    else {
+    } else {
       currentQuestion.mValue = 1;
-
     }
-    user.head = currentQuestion.next
-     let answeredNode;
-      for(let i = 0; i < currentQuestion.mValue; i++){    
-        let idx = currentQuestion.next
-        if (idx == null){
-          idx = user.questions.length - 1
-        } 
-        answeredNode = user.questions[idx]
+    user.head = currentQuestion.next;
+    let answeredNode;
+    for (let i = 0; i < currentQuestion.mValue; i++) {
+      let idx = currentQuestion.next;
+      if (idx == null) {
+        idx = user.questions.length - 1;
       }
-      currentQuestion.next = answeredNode.next
-      answeredNode.next = answerIndex
-    return user.save()
-  })
-})
-
-
-
+      answeredNode = user.questions[idx];
+    }
+    currentQuestion.next = answeredNode.next;
+    answeredNode.next = answerIndex;
+    return user.save();
+  });
+});
 
 module.exports = { router };
