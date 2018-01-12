@@ -13,23 +13,10 @@ const jsonParser = bodyParser.json();
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// router.get('/next', jwtAuth, (req, res) => {
-//   // console.log(req.user, '+++++++++++++++++++++++++++++');
-//   User.findOne({ username: req.user.username })
-//     .then(user => {
-//       res.json(user.questions[user.head]);
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json({ message: 'Internal server error' });
-//     });
-// });
 
 router.get('/next', jwtAuth, (req, res) => {
-  // console.log(req.user, '+++++++++++++++++++++++++++++');
   User.findOne({ username: req.user.username })
     .then(user => {
-      //console.log(user.questions[user.head]);
       res.json(user.questions[user.head]);
     })
     .catch(err => {
@@ -40,7 +27,6 @@ router.get('/next', jwtAuth, (req, res) => {
 
 
 router.get('/', jwtAuth, (req, res) => {
-  // console.log(req.user, '+++++++++++++++++++++++++++++');
   User.findOne({ username: req.user.username })
     .then(user => {
       res.json(user.apiRepr());
@@ -51,8 +37,6 @@ router.get('/', jwtAuth, (req, res) => {
     });
 });
 
-let isCorrect = true;
-//req.body.boolean
 router.post('/answer', jwtAuth, (req, res) => {
   let response = User.findOne({ username: req.user.username })
     .then(user => {
