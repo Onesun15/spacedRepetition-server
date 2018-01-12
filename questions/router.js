@@ -6,11 +6,8 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const { Question } = require('./models');
 const { User } = require('../users/models');
-
 const router = express.Router();
-
 const jsonParser = bodyParser.json();
-
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 
@@ -37,13 +34,12 @@ router.get('/', jwtAuth, (req, res) => {
     });
 });
 
+
 router.post('/answer', jwtAuth, (req, res) => {
   let response = User.findOne({ username: req.user.username })
     .then(user => {
-      const questions = user.questions;
       const answerIndex = user.head;
       const currentQuestion = user.questions[answerIndex];
-      console.log(req.body.boolean);
       if (req.body.boolean === true) {
         currentQuestion.mValue *= 2;
       } else {
@@ -66,17 +62,5 @@ router.post('/answer', jwtAuth, (req, res) => {
       res.status(200).json(user.apiRepr());
     });
 });
-
-// router.get('/next', jwtAuth, (req, res) => {
-//   // console.log(req.user, '+++++++++++++++++++++++++++++');
-//   User.findOne({ username: req.user.username })
-//     .then(user => {
-//       res.json(user.apiRepr());
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json({ message: 'Internal server error' });
-//     });
-// });
 
 module.exports = { router };
