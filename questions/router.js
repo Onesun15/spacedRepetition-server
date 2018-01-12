@@ -29,6 +29,7 @@ router.get('/next', jwtAuth, (req, res) => {
   // console.log(req.user, '+++++++++++++++++++++++++++++');
   User.findOne({ username: req.user.username })
     .then(user => {
+      //console.log(user.questions[user.head]);
       res.json(user.questions[user.head]);
     })
     .catch(err => {
