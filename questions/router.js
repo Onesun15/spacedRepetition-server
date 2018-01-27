@@ -6,18 +6,14 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const { Question } = require('./models');
 const { User } = require('../users/models');
-
 const router = express.Router();
-
 const jsonParser = bodyParser.json();
-
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/', jwtAuth, (req, res) => {
-  // console.log(req.user, '+++++++++++++++++++++++++++++');
+router.get('/next', jwtAuth, (req, res) => {
   User.findOne({ username: req.user.username })
     .then(user => {
-      res.json(user.apiRepr());
+      res.json(user.questions[user.head]);
     })
     .catch(err => {
       console.log(err);
@@ -25,31 +21,75 @@ router.get('/', jwtAuth, (req, res) => {
     });
 });
 
-let testResponse = true;
+router.get('/', jwtAuth, (req, res) => {
+  User.findOne({ username: req.user.username })
+    .then(user => {
+      res.json(user);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Internal server error' });
+    });
+});
+
+router.get('/questions', jwtAuth, (req, res) => {
+  Question.find()
+    .then(questions => {
+      const allQuestions = questions.map(question => question);
+      res.json(allQuestions);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: 'Internal server error' });
+    });
+});
+
+// router.post('/answer', jwtAuth, (req, res) => {
+//   let response = User.findOne({ username: req.user.username })
+//     .then(user => {
+//       const answerIndex = user.head;
+//       const currentQuestion = user.questions[answerIndex];
+//       if (req.body.boolean === true) {
+//         currentQuestion.mValue *= 2;
+//       } else {
+//         currentQuestion.mValue = 1;
+//       }
+//       user.head = currentQuestion.next;
+//       let answeredNode;
+//       for (let i = 0; i < currentQuestion.mValue; i++) {
+//         let idx = currentQuestion.next;
+//         if (idx == null) {
+//           idx = user.questions.length - 1;
+//         }
+//         answeredNode = user.questions[idx];
+//       }
+//       currentQuestion.next = answeredNode.next;
+//       answeredNode.next = answerIndex;
+//       user.head = answeredNode.next;
+//       return user.save();
+//     })
+//     .then(user => {
+//       console.log('ANSWER USER', user)
+//       res.status(200).json(user);
+//     });
+// });
 
 router.post('/answer', jwtAuth, (req, res) => {
-  let response = User.findOne({ username: req.user.username }).then(user => {
-    const questions = user.questions;
-    const answerIndex = user.head;
-    const currentQuestion = user.questions[answerIndex];
-    if (testResponse === true) {
-      currentQuestion.mValue *= 2;
-    } else {
-      currentQuestion.mValue = 1;
-    }
-    user.head = currentQuestion.next;
-    let answeredNode;
-    for (let i = 0; i < currentQuestion.mValue; i++) {
-      let idx = currentQuestion.next;
-      if (idx == null) {
-        idx = user.questions.length - 1;
+  let response = User.findOne({ username: req.user.username })
+    .then(user => {
+      const answerIndex = user.head;
+      const currentQuestion = user.questions[answerIndex];
+      if (req.body.boolean === true && user.head <=9) {
+        user.head += 1;
       }
-      answeredNode = user.questions[idx];
-    }
-    currentQuestion.next = answeredNode.next;
-    answeredNode.next = answerIndex;
-    return user.save();
-  });
+      if(req.body.boolean === true && user.head > 9) {
+        user.head = 0;
+      }
+      return user.save();
+    })
+    .then(user => {
+      res.status(200).json(user);
+    });
 });
 
 module.exports = { router };
