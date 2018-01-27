@@ -11,10 +11,8 @@ const jsonParser = bodyParser.json();
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.get('/next', jwtAuth, (req, res) => {
-  // console.log('Hello, Next!!!!!!!')
   User.findOne({ username: req.user.username })
     .then(user => {
-      //console.log('NEXT-USER Router', user);
       res.json(user.questions[user.head]);
     })
     .catch(err => {
@@ -81,24 +79,15 @@ router.post('/answer', jwtAuth, (req, res) => {
     .then(user => {
       const answerIndex = user.head;
       const currentQuestion = user.questions[answerIndex];
-      if (req.body.boolean === true) {
+      if (req.body.boolean === true && user.head <=9) {
         user.head += 1;
       }
-      // let answeredNode;
-      // for (let i = 0; i < currentQuestion.mValue; i++) {
-      //   let idx = currentQuestion.next;
-      //   if (idx == null) {
-      //     idx = user.questions.length - 1;
-      //   }
-      //   answeredNode = user.questions[idx];
-      // }
-      // currentQuestion.next = answeredNode.next;
-      // answeredNode.next = answerIndex;
-      // user.head = answeredNode.next;
+      if(req.body.boolean === true && user.head > 9) {
+        user.head = 0;
+      }
       return user.save();
     })
     .then(user => {
-      console.log('ANSWER USER', user);
       res.status(200).json(user);
     });
 });
