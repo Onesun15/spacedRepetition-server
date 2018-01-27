@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { User } = require('./models');
-const { Question } = require('../questions/models')
+const { Question } = require('../questions/models');
 
 const router = express.Router();
 
@@ -95,9 +95,9 @@ router.post('/', jsonParser, (req, res) => {
     .then(hash => {
       return User.create({ username, password: hash });
     })
-    .then(user => Question.find().then(questions => ({user, questions})))
-        .then(({user, questions}) => {
-            console.log(user, questions);
+    .then(user => Question.find().then(questions => ({ user, questions })))
+    .then(({ user, questions }) => {
+      console.log('NewUserCreated', user, questions);
       // storing q's in empty user.questions []
       user.questions = questions.map((question, index) => {
         return {
@@ -105,13 +105,13 @@ router.post('/', jsonParser, (req, res) => {
           question: question.question,
           answer: question.answer,
           mValue: 1,
-          next: index === questions.length - 1 ? null: index + 1
-        }
-      })
-      return user.save()
+          next: index === questions.length - 1 ? null : index + 1
+        };
+      });
+      return user.save();
     })
     .then(user => {
-      return res.status(201).json(user.apiRepr())
+      return res.status(201).json(user);
     })
     .catch(err => {
       if (err.reason === 'ValidationError') {
@@ -119,11 +119,11 @@ router.post('/', jsonParser, (req, res) => {
       }
       res.status(500).json({ code: 500, message: 'Internal server error' });
     });
-  });
+});
 
 router.get('/', (req, res) => {
   return User.find()
-    .then(users => res.json(users.map(user => user.apiRepr())))
+    .then(users => res.json(users.map(user => user)))
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
