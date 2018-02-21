@@ -89,7 +89,9 @@ router.post('/answer', jwtAuth, (req, res) => {
 	let response = User.findOne({ username: req.user.username })
 		.then(user => {
 			console.log('user.head: ', user.head);
-			req.body.boolean ? (user.head += 1) : (user.head += 1);
+			if (req.body.boolean === true || req.body.boolean === false) {
+				user.head += 1;
+			}
 			if (user.head > user.questions.length - 1) {
 				user.head = 0;
 			}
